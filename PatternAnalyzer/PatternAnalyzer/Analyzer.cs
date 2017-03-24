@@ -5,12 +5,13 @@ using System.Linq;
 using Emgu.CV;
 using Emgu.CV.Cvb;
 using Emgu.CV.Structure;
+using PatternAnalyzer.Structures;
 
 namespace PatternAnalyzer
 {
     public class Analyzer
     {
-        public CvBlobs FindBlobs( Bitmap src, uint minArea, uint maxArea )
+        public IEnumerable<PointF> FindBlobs( Bitmap src, uint minArea, uint maxArea )
         {
             if( src == null )
             {
@@ -19,8 +20,8 @@ namespace PatternAnalyzer
 
             using( var sourceImage = new Image<Gray, byte>( src ) )
             using( var blobDetector = new CvBlobDetector( ) )
-            {
-                var blobs = new CvBlobs( );
+            using( var blobs = new CvBlobs( ))
+            { 
                 Image<Gray, byte> filteredSrc = null;
 
                 try
@@ -37,7 +38,8 @@ namespace PatternAnalyzer
                     // have an average area of roughly 3500 pixels.
                     blobs.FilterByArea( ( int )minArea, ( int )maxArea );
 
-                    return blobs;
+                    // Return the centroids of each blob.
+                    return blobs.Values.Select( b => new PointF( b.Centroid.X, b.Centroid.Y ) );
                 }
                 finally
                 {
@@ -99,6 +101,44 @@ namespace PatternAnalyzer
                 }
                 return edge;
             }
+        }
+
+        public RowPoints[ , ] SplitPoints( IEnumerable<PointF> points )
+        {
+            // There are 10 dots per full row
+            // on the alignment pattern.
+            const int pointsPerFullRow = 10;
+
+            const int numberOfColumns = 2;
+
+            // Sort the points based on their Y coordinate
+            // to make it eaiser to split the rows apart.
+            var sorted = points.OrderBy( p => p.Y ).ToList( );
+
+            // Determine the number of rows found in the
+            // alignment image.
+            var numberOfRows = sorted.Count / pointsPerFullRow;
+
+            // Create the structure which will hold each
+            // row and column of dots.
+            var splitPoints = new RowPoints[ numberOfRows, 2 ];
+
+            for( int row = 0; row < numberOfRows; row++ )
+            for( int column = 0; column < numberOfColumns; column++ )          
+            {
+                var next = row * pointsPerFullRow;
+                var r =
+                    sorted.GetRange( next, pointsPerFullRow )
+                        .OrderBy( p => p.X )
+                        .ToList( )
+                        .GetRange( column * 5, 5 );
+
+                splitPoints[ row, column ] = new RowPoints( row, column, r );
+            }
+
+
+
+            return splitPoints;
         }
 
         public PointF FindAveragePoint( IEnumerable<PointF> points )

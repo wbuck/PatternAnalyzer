@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.Cvb;
 using Emgu.CV.Structure;
 using PatternAnalyzer.Structures;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace PatternAnalyzer
 {
@@ -20,8 +20,8 @@ namespace PatternAnalyzer
 
             using( var sourceImage = new Image<Gray, byte>( src ) )
             using( var blobDetector = new CvBlobDetector( ) )
-            using( var blobs = new CvBlobs( ))
-            { 
+            using( var blobs = new CvBlobs( ) )
+            {
                 Image<Gray, byte> filteredSrc = null;
 
                 try
@@ -103,17 +103,31 @@ namespace PatternAnalyzer
             }
         }
 
-        public RowPoints[ , ] SplitPoints( IEnumerable<PointF> points )
+        public RowPoints[ , ] SortPointsInToRowsAndColumns( IEnumerable<PointF> points )
         {
+            if( points == null )
+            {
+                throw new ArgumentNullException( nameof( points ), @"Points collection cannot be null." );
+            }
+
+            var pointFs = points as IList<PointF> ?? points.ToList( );
+
+            // Ensure there is 10 points per row.
+            if( pointFs.Count % 10 != 0 )
+            {
+                return new RowPoints[ 0, 0 ];
+            }
             // There are 10 dots per full row
             // on the alignment pattern.
             const int pointsPerFullRow = 10;
 
+            // Split each row in to columns of
+            // 5 points (alignment dots).
             const int numberOfColumns = 2;
 
             // Sort the points based on their Y coordinate
             // to make it eaiser to split the rows apart.
-            var sorted = points.OrderBy( p => p.Y ).ToList( );
+            var sorted = pointFs.OrderBy( p => p.Y ).ToList( );
 
             // Determine the number of rows found in the
             // alignment image.
@@ -124,20 +138,21 @@ namespace PatternAnalyzer
             var splitPoints = new RowPoints[ numberOfRows, 2 ];
 
             for( int row = 0; row < numberOfRows; row++ )
-            for( int column = 0; column < numberOfColumns; column++ )          
             {
-                var next = row * pointsPerFullRow;
-                var r =
-                    sorted.GetRange( next, pointsPerFullRow )
-                        .OrderBy( p => p.X )
+                // Grab the next row of points (alignment dots).
+                var nextRow = sorted.GetRange( row * pointsPerFullRow, pointsPerFullRow ).OrderBy( p => p.X );
+
+                for( int column = 0; column < numberOfColumns; column++ )
+                {
+                    // Split the row in to columns consisting
+                    // of 5 points (alignment dots) per column.
+                    var nextColumn = nextRow
                         .ToList( )
                         .GetRange( column * 5, 5 );
 
-                splitPoints[ row, column ] = new RowPoints( row, column, r );
+                    splitPoints[ row, column ] = new RowPoints( row, column, nextColumn );
+                }
             }
-
-
-
             return splitPoints;
         }
 

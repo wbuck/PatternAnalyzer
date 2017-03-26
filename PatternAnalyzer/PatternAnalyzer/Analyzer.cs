@@ -11,6 +11,13 @@ namespace PatternAnalyzer
 {
     public class Analyzer
     {
+        /// <summary>
+        /// Finds blobs with the specified min and max area.
+        /// </summary>
+        /// <param name="src">Source image</param>
+        /// <param name="minArea">The minimum allowable area</param>
+        /// <param name="maxArea">The maximum allowable area</param>
+        /// <returns>List containing the X and Y coordinates of the found blobs</returns>
         public IEnumerable<PointF> FindBlobs( Bitmap src, uint minArea, uint maxArea )
         {
             if( src == null )

@@ -156,6 +156,12 @@ namespace PatternAnalyzer
             return splitPoints;
         }
 
+        /// <summary>
+        /// Finds the average X and Y coordinate 
+        /// in a list of points.
+        /// </summary>
+        /// <param name="points">List of points to average</param>
+        /// <returns>The average point</returns>
         public PointF FindAveragePoint( IEnumerable<PointF> points )
         {
             if( points == null )

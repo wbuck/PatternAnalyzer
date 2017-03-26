@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Xunit;
+using NUnit.Framework;
 
 namespace PatternAnalyzerTests
 {
     public class AnalyzerTests
     {
-        [Fact]
+        [Test]
         public void FindBlobsTestTwentyBlobs( )
         {
             var image = ( Bitmap )Resources.ResourceManager.GetObject( "GoodImageTwentyDots" );
@@ -23,10 +23,10 @@ namespace PatternAnalyzerTests
             var analyzer = new Analyzer( );
 
             var actual = analyzer.FindBlobs( image, minArea, maxArea );
-            Assert.Equal( expectedBlobsFound, actual.Count( ) );
+            Assert.AreEqual( expectedBlobsFound, actual.Count( ) );
         }
 
-        [Fact]
+        [Test]
         public void FindBlobsTestNoBlobs( )
         {
             var image = ( Bitmap )Resources.ResourceManager.GetObject( "BadImageNoDots" );
@@ -37,10 +37,10 @@ namespace PatternAnalyzerTests
             var analyzer = new Analyzer( );
 
             var actual = analyzer.FindBlobs( image, minArea, maxArea );
-            Assert.Equal( expectedBlobsFound, actual.Count( ) );
+            Assert.AreEqual( expectedBlobsFound, actual.Count( ) );
         }
 
-        [Fact]
+        [Test]
         public void FindBlobsTestNull( )
         {
             Bitmap image = null;
@@ -49,13 +49,10 @@ namespace PatternAnalyzerTests
 
             var analyzer = new Analyzer( );
 
-            var exception = Record.Exception( ( ) => { analyzer.FindBlobs( image, minArea, maxArea ); } );
-
-            Assert.NotNull( exception );
-            Assert.IsType<ArgumentNullException>( exception );
+            Assert.Throws<ArgumentNullException>( ( ) => { analyzer.FindBlobs( image, minArea, maxArea ); } );
         }
 
-        [Fact]
+        [Test]
         public void FindEdgeTestEdge( )
         {
             var image = ( Bitmap )Resources.ResourceManager.GetObject( "GoodImageTwentyDots" );
@@ -64,10 +61,10 @@ namespace PatternAnalyzerTests
 
             var actual = analyzer.FindEdge( image );
 
-            Assert.NotEqual( notExpected, actual );
+            Assert.AreNotEqual( notExpected, actual );
         }
 
-        [Fact]
+        [Test]
         public void FindEdgeTestNoEdge( )
         {
             var image = ( Bitmap )Resources.ResourceManager.GetObject( "BadImageNoEdge" );
@@ -76,22 +73,19 @@ namespace PatternAnalyzerTests
 
             var actual = analyzer.FindEdge( image );
 
-            Assert.Equal( expected, actual );
+            Assert.AreEqual( expected, actual );
         }
 
-        [Fact]
+        [Test]
         public void FindEdgeTestNull( )
         {
             Bitmap image = null;
             var analyzer = new Analyzer( );
 
-            var exception = Record.Exception( ( ) => { analyzer.FindEdge( image ); } );
-
-            Assert.NotNull( exception );
-            Assert.IsType<ArgumentNullException>( exception );
+            Assert.Throws<ArgumentNullException>( ( ) => { analyzer.FindEdge( image ); } );
         }
 
-        [Fact]
+        [Test]
         public void FindAveragePointTestFivePoints( )
         {
             var testPoints = new List<PointF>
@@ -108,10 +102,10 @@ namespace PatternAnalyzerTests
             var analyzer = new Analyzer( );
             var actual = analyzer.FindAveragePoint( testPoints );
 
-            Assert.Equal( expected, actual );
+            Assert.AreEqual( expected, actual );
         }
 
-        [Fact]
+        [Test]
         public void FindAveragePointTestNoPoints( )
         {
             var testPoints = new List<PointF>( );
@@ -120,22 +114,19 @@ namespace PatternAnalyzerTests
             var analyzer = new Analyzer( );
             var actual = analyzer.FindAveragePoint( testPoints );
 
-            Assert.Equal( expected, actual );
+            Assert.AreEqual( expected, actual );
         }
 
-        [Fact]
+        [Test]
         public void FindAveragePointTestNull( )
         {
             List<PointF> testPoints = null;
             var analyzer = new Analyzer( );
 
-            var exception = Record.Exception( ( ) => { analyzer.FindAveragePoint( testPoints ); } );
-
-            Assert.NotNull( exception );
-            Assert.IsType<ArgumentNullException>( exception );
+            Assert.Throws<ArgumentNullException>( ( ) => { analyzer.FindAveragePoint( testPoints ); } );
         }
 
-        [Fact]
+        [Test]
         public void SortPointsInToRowsAndColumnsTestTentyPoints( )
         {
             var alignmentDotCoordinates = new List<PointF>
@@ -172,16 +163,16 @@ namespace PatternAnalyzerTests
             var analyzer = new Analyzer( );
             var actual = analyzer.SortPointsInToRowsAndColumns( alignmentDotCoordinates );
 
-            Assert.Equal( expectedLength, actual.Length );
-            Assert.Equal( expectedPointsCount, actual[ 0, 0 ].Points.Count );
-            Assert.Equal( expectedPointsCount, actual[ 1, 1 ].Points.Count );
-            Assert.Equal( expectedFirstRowFirstColumnMiddlePoint, actual[ 0, 0 ].Points[ 2 ] );
-            Assert.Equal( expectedFirstRowSecondColumnMiddlePoint, actual[ 0, 1 ].Points[ 2 ] );
-            Assert.Equal( expectedSecondRowFirstColumnFirstPoint, actual[ 1, 0 ].Points[ 0 ] );
-            Assert.Equal( expectedSecondRowSecondColumnLastPoint, actual[ 1, 1 ].Points[ 4 ] );
+            Assert.AreEqual( expectedLength, actual.Length );
+            Assert.AreEqual( expectedPointsCount, actual[ 0, 0 ].Points.Count );
+            Assert.AreEqual( expectedPointsCount, actual[ 1, 1 ].Points.Count );
+            Assert.AreEqual( expectedFirstRowFirstColumnMiddlePoint, actual[ 0, 0 ].Points[ 2 ] );
+            Assert.AreEqual( expectedFirstRowSecondColumnMiddlePoint, actual[ 0, 1 ].Points[ 2 ] );
+            Assert.AreEqual( expectedSecondRowFirstColumnFirstPoint, actual[ 1, 0 ].Points[ 0 ] );
+            Assert.AreEqual( expectedSecondRowSecondColumnLastPoint, actual[ 1, 1 ].Points[ 4 ] );
         }
 
-        [Fact]
+        [Test]
         public void SortPointsInToRowsAndColumnsTestTenPoints( )
         {
             var alignmentDotCoordinates = new List<PointF>
@@ -206,15 +197,15 @@ namespace PatternAnalyzerTests
             var analyzer = new Analyzer( );
             var actual = analyzer.SortPointsInToRowsAndColumns( alignmentDotCoordinates );
 
-            Assert.Equal( expectedLength, actual.Length );
-            Assert.Equal( expectedFirstColumnMiddlePoint, actual[ 0, 0 ].Points[ 2 ] );
-            Assert.Equal( expectedSecondColumnSecondLastPoint, actual[ 0, 1 ].Points[ 3 ] );
-            Assert.Equal( expectedPointsCount, actual[ 0, 0 ].Points.Count );
-            Assert.Equal( expectedPointsCount, actual[ 0, 1 ].Points.Count );
+            Assert.AreEqual( expectedLength, actual.Length );
+            Assert.AreEqual( expectedFirstColumnMiddlePoint, actual[ 0, 0 ].Points[ 2 ] );
+            Assert.AreEqual( expectedSecondColumnSecondLastPoint, actual[ 0, 1 ].Points[ 3 ] );
+            Assert.AreEqual( expectedPointsCount, actual[ 0, 0 ].Points.Count );
+            Assert.AreEqual( expectedPointsCount, actual[ 0, 1 ].Points.Count );
 
         }
 
-        [Fact]
+        [Test]
         public void SortPointsInToRowsAndColumnsTestNotEnoughPointsToSort( )
         {
             var alignmentDotCoordinates = new List<PointF>
@@ -232,20 +223,17 @@ namespace PatternAnalyzerTests
 
             var result = analyzer.SortPointsInToRowsAndColumns( alignmentDotCoordinates );
 
-            Assert.Equal( expected, result );
+            Assert.AreEqual( expected, result );
         }
 
-        [Fact]
+        [Test]
         public void SortPointsInToRowsAndColumnsTestNull( )
         {
             List<PointF> alignmentDotCoordinates = null;
             var analyzer = new Analyzer( );
 
-            var exception = Record.Exception(
+            Assert.Throws<ArgumentNullException>(
                 ( ) => { analyzer.SortPointsInToRowsAndColumns( alignmentDotCoordinates ); } );
-
-            Assert.NotNull( exception );
-            Assert.IsType<ArgumentNullException>( exception );
         }
     }
 }

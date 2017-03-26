@@ -55,6 +55,11 @@ namespace PatternAnalyzer
             }
         }
 
+        /// <summary>
+        /// Find the strongest edge in the source image.
+        /// </summary>
+        /// <param name="src">Source image</param>
+        /// <returns>Object which contains the start and end point of the line</returns>
         public LineSegment2D FindEdge( Bitmap src )
         {
             if( src == null )

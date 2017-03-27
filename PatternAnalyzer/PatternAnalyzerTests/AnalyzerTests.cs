@@ -235,5 +235,18 @@ namespace PatternAnalyzerTests
             Assert.Throws<ArgumentNullException>(
                 ( ) => { analyzer.SortPointsInToRowsAndColumns( alignmentDotCoordinates ); } );
         }
+
+        [Test]
+        public void CalculateDistanceBetweenPointsXTestCorrectDistance( )
+        {
+            var point1 = new PointF( 10, 0 );
+            var point2 = new PointF( 50, 0 );
+
+            const double expected = 40;
+            var analyzer = new Analyzer( );
+
+            var actual = analyzer.CalculateDistanceBetweenPointsX( point1, point2 );
+            Assert.AreEqual( expected, actual );
+        }
     }
 }

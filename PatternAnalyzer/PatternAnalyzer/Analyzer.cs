@@ -190,5 +190,11 @@ namespace PatternAnalyzer
 
             return new PointF( pointFs.Average( p => p.X ), pointFs.Average( p => p.Y ) );
         }
+
+        public double CalculateDistanceBetweenPointsX( PointF start, PointF end )
+        {
+           
+            return 0;
+        }
     }
 }

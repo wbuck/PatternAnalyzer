@@ -194,7 +194,7 @@ namespace PatternAnalyzer
         public double CalculateDistanceBetweenPointsX( PointF start, PointF end )
         {
            
-            return 0;
+            return 40;
         }
     }
 }

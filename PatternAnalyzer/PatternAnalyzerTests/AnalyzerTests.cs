@@ -237,7 +237,7 @@ namespace PatternAnalyzerTests
         }
 
         [Test]
-        public void CalculateDistanceBetweenPointsXTestCorrectDistance( )
+        public void CalculateDeltaXTestCorrectDistance( )
         {
             var point1 = new PointF( 10, 0 );
             var point2 = new PointF( 50, 0 );
@@ -245,7 +245,7 @@ namespace PatternAnalyzerTests
             const double expected = 40;
             var analyzer = new Analyzer( );
 
-            var actual = analyzer.CalculateDistanceBetweenPointsX( point1, point2 );
+            var actual = analyzer.CalculateDeltaX( point1, point2 );
             Assert.AreEqual( expected, actual );
         }
     }

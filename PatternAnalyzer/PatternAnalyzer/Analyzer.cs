@@ -191,6 +191,13 @@ namespace PatternAnalyzer
             return new PointF( pointFs.Average( p => p.X ), pointFs.Average( p => p.Y ) );
         }
 
+        /// <summary>
+        /// Calculate difference in X between
+        /// two points.
+        /// </summary>
+        /// <param name="start">The first point</param>
+        /// <param name="end">The second point</param>
+        /// <returns>The distance from point 1 to point 2</returns>
         public double CalculateDeltaX( PointF start, PointF end )
         {
             return end.X - start.X;
